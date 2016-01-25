@@ -8,7 +8,7 @@
 <p>During my PhD, I used machine learning and statistical computing search for meaningful signals in large, heterogeneous, messy datasets related to biology and health. In venturing beyond the typical acquire-clean-model-analyze-visualize-publish pipeline, I have been playing with other ways to make this data accessible and explorable, some of which are featured below. Enjoy!</p>
 
 <p class="basic-title">What's a Natural Killer cell?</p>
-<p>Natural Killer (NK) cells, the focus of my research, are a type of fast-acting white blood cell. Every person has about 1000 of them in every drop of blood. They are one of the body's most effective mechanisms for quickly killing virus-infected cells. My research used a new technology (mass cytometry) to obtain high-dimensional data that I mined to obtain new insights about the role of NK cells in viral disease, especially HIV. Some of the key findings are explained in various visualizations below.</p>
+<p>Natural Killer (NK) cells, the focus of my research, are a type of fast-acting white blood cell. Every person has about 1000 of them in every drop of blood. They are one of the body's most effective mechanisms for quickly killing virus-infected cells. My research used a new technology (mass cytometry) to obtain high-dimensional data that I mined to obtain new insights about the role of NK cells in viral disease, especially HIV. Some of the key findings are explained in various visualizations below. Click each bar to expand and learn more. </p>
 
 <details>
           <summary><p id="project-title">Human Natural Killer Cell Diversity Predicts HIV Acquistion: D3.js</p> </summary>
@@ -287,7 +287,7 @@
 <p>On the y-axis, we looked at diversity of each type of immune cell. We calculated this by measuring many different NK markers on the surface of each cell, then used an equation from ecology to find the diversity of the cell population.</p>
 <p>You can toggle between cell types using the buttons, and choose to sort by diversity or not. We found that NK diversity was significantly associated with HIV acquisition. This is clear from the abundance of red bars shifted left when you sort the NK cell bars, but not the CD4+ or CD8+ T cell bars.</p>
 <p>By logistic regression, for each 100-point increase in NK diversity, the woman's odds of HIV acquisition were increased by 2.5-fold! This is as good or better than the best known predictors of HIV acquisition.</p>
-<!-- <p>Want to read more? Check out my paper, or the associated news articles, or the video below.</p> -->
+
 </details>
 
 <details>
@@ -305,4 +305,6 @@
 
 <p><a id = "plain-link" target="_blank" href = "https://youtu.be/4LULvyEKBN4">Check out the video on YouTube</a></p>
 </details>
+
+<p>Want to read more? Check out my <a id="plain-link" target="_blank" href = "http://www.ncbi.nlm.nih.gov/pubmed/26203083">paper</a>, or the <a id="plain-link" target="_blank" href = "http://www.the-scientist.com/?articles.view/articleNo/43586/title/NK-Cell-Diversity-and-Viral-Risk/">associated article</a> in The Scientist magazine.</p>
 {% endblock %}
