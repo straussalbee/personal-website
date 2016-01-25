@@ -1,0 +1,25 @@
+<!-- publications.html -->
+
+
+
+
+{% extends "base.html" %}
+
+{% block body %}
+
+<h3>Publications</h3>
+
+
+{% for paper in papers %}
+	<p class="left-text"> {% for key in paper.authors %}
+		{{ key.name + ", "}} 
+	{% endfor %}
+	{{ paper.pubdate + ". " + paper.title + " " + paper.source + ". " + paper.elocationid + "." }} </p>
+
+
+{% endfor %}
+	
+
+<h3>Powered by PubMed Entrez API</h3>
+
+{% endblock %}

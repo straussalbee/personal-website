@@ -1,0 +1,306 @@
+<!-- projects.html -->
+
+{% extends "base.html" %}
+
+{% block body %}
+
+<p class="basic-title">What is this page?</p>
+<p>During my PhD, I used machine learning and statistical computing search for meaningful signals in large, heterogeneous, messy datasets related to biology and health. In venturing beyond the typical acquire-clean-model-analyze-visualize-publish pipeline, I have been playing with other ways to make this data accessible and explorable, some of which are featured below. Enjoy!</p>
+
+<p class="basic-title">What's a Natural Killer cell?</p>
+<p>Natural Killer (NK) cells, the focus of my research, are a type of fast-acting white blood cell. Every person has about 1000 of them in every drop of blood. They are one of the body's most effective mechanisms for quickly killing virus-infected cells. My research used a new technology (mass cytometry) to obtain high-dimensional data that I mined to obtain new insights about the role of NK cells in viral disease, especially HIV. Some of the key findings are explained in various visualizations below.</p>
+
+
+
+<p class="basic-title">Human Natural Killer cell diversity visualized using D3.js</p>
+
+		<div id="NKButton"><input type="button" value="NK cells" /></div>
+		<div id="CD8Button"><input type="button" value="CD8+ T cells" /></div>
+		<div id="CD4Button"><input type="button" value="CD4+ T cells" /></div>
+		<label><input type="checkbox" id="sortButton"> Sort values</label>
+		<p></p>
+
+<span id="d3space"> </span>
+
+		<!-- <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> online copy of d3-->
+		<script type="text/javascript" src="../d3.v3.js"></script>  <!-- local copy of d3 to use when running offline-->
+
+		<script type="text/javascript">
+			var dataset;
+
+			var w = 700;
+			var h = 600;
+			var barPadding = 1;
+			var padding = 50;
+
+			d3.csv("MSCompiledWIDE.csv", function(error, data) {
+
+		        if (error) {  //If error is not null, something went wrong.
+		          console.log(error);  //Log the error.
+		        } else {      //If no error, the file loaded correctly.
+		          console.log(data);   //Log the data.
+
+		      data.forEach(function(d) { //convert to numeric
+			    d.Diversity_NK = +d.Diversity_NK;
+			    d.Diversity_CD8 = +d.Diversity_CD8;
+			    d.Diversity_CD4 = +d.Diversity_CD4;
+			    d.Order = +d.Order;
+			  });
+
+		      dataset = data;
+		      generateVis();
+		        }
+		    });
+
+			function generateVis(){
+
+
+			var xScale = d3.scale.ordinal()
+				 .domain(d3.range(dataset.length))
+				 .rangeRoundBands([0, w - padding], 0.05);
+
+			var yScale = d3.scale.linear()
+				 .domain([0, d3.max(dataset, function(d) { return d.Diversity_NK; })])
+				 .range([h - padding, padding]);
+
+			//Define X axis
+			var xAxis = d3.svg.axis()
+							  .scale(xScale)
+							  .orient("bottom")
+							  .ticks(5);
+
+			//Define Y axis
+			var yAxis = d3.svg.axis()
+							  .scale(yScale)
+							  .orient("left")
+							  .ticks(5);
+
+
+
+			var svg = d3.select("#d3space")
+				.append("svg")
+				.attr("width", w)
+				.attr("height", h);
+
+			svg.selectAll("rect")
+			   .data(dataset)
+			   .enter()
+			   .append("rect")
+
+			   .attr("x", function(d, i) {
+			   		return xScale(i) + padding;
+			   })
+			   .attr("y", function(d) {
+			   		return yScale(d.Diversity_NK) ;
+			   })
+			   .attr("width", xScale.rangeBand())
+			   .attr("height", function(d) {
+			   		return h - yScale(d.Diversity_NK) - padding;
+			   })
+			   .attr("fill", function(d) {
+			   	    if (d.Type2 == "Control") {return "blue"};
+					if (d.Type2 == "Case") {return "red"};
+				})
+				.on("mouseover", function(d) { //tooltips to show diversity values
+
+					//Get this bar's x/y values, then augment for the tooltip
+					var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
+					var yPosition = parseFloat(d3.select(this).attr("y")) + 10;
+
+					//Create the tooltip label
+					svg.append("text")
+					   .attr("id", "tooltip")
+					   .attr("x", xPosition)
+					   .attr("y", yPosition)
+					   .attr("text-anchor", "middle")
+					   .attr("font-family", "sans-serif")
+					   .attr("font-size", "9px")
+					   .attr("font-weight", "bold")
+					   .attr("fill", "white")
+					   .text(Math.round(d.Diversity_NK));
+
+			   })
+			   .on("mouseout", function() {
+			   
+					//Remove the tooltip
+					d3.select("#tooltip").remove();
+			   });
+
+			//Create X axis
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(" + padding + "," + (h - padding) + ")")
+				.call(xAxis);
+
+			//x-axis label
+			svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate("+ (padding/3) +","+(h/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+            .text("Diversity");
+			
+			//Create Y axis
+			svg.append("g")
+				.attr("class", "y axis")
+				.attr("transform", "translate(" + padding +  "," + "0)") ///fix
+				.call(yAxis);
+
+			//Cell type label
+			svg.append("text") 
+			.attr("class", "cellLabel") 
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate("+ (w/1.2) +","+(h/8)+")")  //move to top right corner
+            .attr("font-family", "sans-serif")
+		    .attr("font-size", "38px")
+		    .attr("font-weight", "bold")
+            .text("NK cells");
+
+	  		d3.select("#sortButton").on("change", changetoNK);
+
+			function changetoNK() {
+			    var x0 = xScale.domain(dataset.sort(this.checked
+			        ? function(a, b) { return b.Diversity_NK - a.Diversity_NK; }
+			        : function(a, b) { return d3.ascending(a.Order, b.Order); })
+			        .map(function(d) { return d.Order; }))
+			        .copy();
+
+			    svg.selectAll("rect")
+			        .sort(function(a, b) { return x0(a.Order) - x0(b.Order); });
+
+			    var transition = svg.transition().duration(350),
+			        delay = function(d, i) { return i * 30; };
+
+			    transition.selectAll("rect")
+			        .delay(delay)
+			        .attr("x", function(d) { return x0(d.Order) + padding; });
+			  	}
+
+			function changetoCD8() {
+			    var x0 = xScale.domain(dataset.sort(this.checked
+			        ? function(a, b) { return b.Diversity_CD8 - a.Diversity_CD8; }
+			        : function(a, b) { return d3.ascending(a.Order, b.Order); })
+			        .map(function(d) { return d.Order; }))
+			        .copy();
+
+			    svg.selectAll("rect")
+			        .sort(function(a, b) { return x0(a.Order) - x0(b.Order); });
+
+			    var transition = svg.transition().duration(350),
+			        delay = function(d, i) { return i * 30; };
+
+			    transition.selectAll("rect")
+			        .delay(delay)
+			        .attr("x", function(d) { return x0(d.Order) + padding; });
+			  	}
+
+			function changetoCD4() {
+			    var x0 = xScale.domain(dataset.sort(this.checked
+			        ? function(a, b) { return b.Diversity_CD4 - a.Diversity_CD4; }
+			        : function(a, b) { return d3.ascending(a.Order, b.Order); })
+			        .map(function(d) { return d.Order; }))
+			        .copy();
+
+			    svg.selectAll("rect")
+			        .sort(function(a, b) { return x0(a.Order) - x0(b.Order); });
+
+			    var transition = svg.transition().duration(350),
+			        delay = function(d, i) { return i * 30; };
+
+			    transition.selectAll("rect")
+			        .delay(delay)
+			        .attr("x", function(d) { return x0(d.Order) + padding; });
+			  	}
+
+			//On click of one of 3 buttons, update with new data			
+			d3.selectAll("div") 
+			    .on("click", function() {
+			    	var buttonID = d3.select(this).attr("id");
+			    	console.log(buttonID);
+					if (buttonID == "NKButton") {  //update to be NK cells
+						d3.select("#sortButton").on("change", changetoNK); //sort by NK diversity order if sort button is clicked
+
+						svg.select(".cellLabel")
+							.text("NK cells");
+
+				    	yScale.domain([0, d3.max(dataset, function(d) { return d.Diversity_NK; })]); //Update y scale domain (range does not change)
+						svg.selectAll("rect") //Update all rects
+						   .transition()
+						   .delay(function(d, i) {
+							    return i / dataset.length * 200;
+							})
+						   .duration(1000)
+						   .attr("y", function(d) {
+						   		return yScale(d.Diversity_NK);
+						   })
+						   .attr("height", function(d) {
+						   		return h - yScale(d.Diversity_NK) - padding;
+						   })}
+
+			    	else if (buttonID == "CD8Button") {  //update to be CD8 T cells
+			    		d3.select("#sortButton").on("change", changetoCD8);
+				    	yScale.domain([0, d3.max(dataset, function(d) { return d.Diversity_CD8; })]); //Update y scale domain (range does not change)
+
+						svg.select(".cellLabel")
+							.text("CD8+ T cells")
+
+						svg.selectAll("rect") //Update all rects
+						   .transition()
+						   .delay(function(d, i) {
+							    return i / dataset.length * 200;
+							})
+						   .duration(1000)
+						   .attr("y", function(d) {
+						   		return yScale(d.Diversity_CD8);
+						   })
+						   .attr("height", function(d) {
+						   		return h - yScale(d.Diversity_CD8) - padding;
+						   })} 
+
+				   else { //update to be CD4 T cells
+				   		d3.select("#sortButton").on("change", changetoCD4);
+				   	 	yScale.domain([0, d3.max(dataset, function(d) { return d.Diversity_CD4; })]); //Update y scale domain (range does not change)
+						svg.select(".cellLabel")
+							.text("CD4+ T cells");
+						svg.selectAll("rect") //Update all rects
+						   .transition()
+						   .delay(function(d, i) {
+							    return i / dataset.length * 200;
+							})
+						   .duration(1000)
+						   .attr("y", function(d) {
+						   		return yScale(d.Diversity_CD4);
+						   })
+						   .attr("height", function(d) {
+						   		return h - yScale(d.Diversity_CD4) - padding;
+						   })}
+
+					svg.select(".y.axis") //Update Y axis
+				    	.transition()
+				    	.duration(1000)
+						.call(yAxis);
+					});			
+
+}
+
+		</script>
+
+<p>Here, each bar represents a blood sample from a Kenyan woman, obtained while she was HIV-negative. The <span style = "color:red"> cases </span> went on to acquire HIV. The <span style = "color:blue">controls</span> did not.</p>
+<p>The graph shows three types of white blood cells from each woman. CD4+ and CD8+ T cells are those usually associated with immune memory. These cells' responses are part of the reason that vaccines generate better and faster immune responses to the same pathogen. Natural killer (NK) cells are the quick killers explained above.</p>
+<p>On the y-axis, we looked at diversity of each type of immune cell. We calculated this by measuring many different NK markers on the surface of each cell, then used an equation from ecology to find the diversity of the cell population.</p>
+<p>You can toggle between cell types using the buttons, and choose to sort by diversity or not. We found that NK diversity was significantly associated with HIV acquisition. This is clear from the abundance of red bars shifted left when you sort the NK cell bars, but not the CD4+ or CD8+ T cell bars.</p>
+<p>By logistic regression, for each 100-point increase in NK diversity, the woman's odds of HIV acquisition were increased by 2.5-fold! This is as good or better than the best known predictors of HIV acquisition.</p>
+<!-- <p>Want to read more? Check out my paper, or the associated news articles, or the video below.</p> -->
+
+
+<p class="basic-title">Human NK cell repertoire stability as a Shiny app</p>
+
+<p>If NK cell diversity can be useful in predicting HIV, we need to know whether it is stable in the same person from day to day.</p>
+<p>Here, we took blood from 12 healthy donors every week for 5 of 6 weeks, and again six months later. We measured the population frequency of a number of markers on the cell surface over these six timepoints. If the NK repertoire is stable, the size of the dots representing frequency should stay the same across all timepoints - do you see it?</p>
+<p>We used a Bayesian hierarachical model to formally demonstrate stability in my <a class="plain-link" target="_blank" href = "http://www.ncbi.nlm.nih.gov/pubmed/26203083">paper</a>.</p>
+<p><a id = "shinyLink" target="_blank" href = "https://dstraussalbee.shinyapps.io/repertoire">Explore human NK cell repertoire stability</a></p>
+
+<p class="basic-title">Stop-motion animation</p>
+<p>I learned stop-motion animation as part of a Scientific Illustration and Animation class I took at Stanford. I thought it would be interesting to try to explain my research findings in a non-conventional way that could be understood by a broad audience. Enjoy!</p>
+
+<p><a id = "stopMotionLink" target="_blank" href = "https://youtu.be/4LULvyEKBN4">Check out the video on YouTube</a></p>
+
+{% endblock %}
