@@ -55,27 +55,33 @@ a:link, a:visited {
     padding: 14px;
     text-decoration: none;
     text-transform: uppercase;
-
-
 }
 
 a:hover, a:active {
     background-color: #0082A3;
 }
 
-#shinyLink {
+#project-title {
 	background-color: purple;
 	margin:0 auto;
 	width: 960px;
 	color: white;
+	font-size: 24px;
+	padding: 14px;
+	margin:5 auto;
+	
+	
 
 }
 
-.plain-link {
+#plain-link {
     text-align: left;
     color:00A3CC;
     background-color: #FFFFFF;
     display:inline;
+    text-transform: none;
+    font-size: 16px;
+    padding: 0px;
 }
 
 [type="button"] {
@@ -108,4 +114,8 @@ rect {
 
 rect:hover {
 	fill: black;
+}
+
+summary::-webkit-details-marker {
+  display: none
 }

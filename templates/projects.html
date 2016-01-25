@@ -10,9 +10,8 @@
 <p class="basic-title">What's a Natural Killer cell?</p>
 <p>Natural Killer (NK) cells, the focus of my research, are a type of fast-acting white blood cell. Every person has about 1000 of them in every drop of blood. They are one of the body's most effective mechanisms for quickly killing virus-infected cells. My research used a new technology (mass cytometry) to obtain high-dimensional data that I mined to obtain new insights about the role of NK cells in viral disease, especially HIV. Some of the key findings are explained in various visualizations below.</p>
 
-
-
-<p class="basic-title">Human Natural Killer cell diversity visualized using D3.js</p>
+<details>
+          <summary><p id="project-title">Human Natural Killer Cell Diversity Predicts HIV Acquistion: D3.js</p> </summary>
 
 		<div id="NKButton"><input type="button" value="NK cells" /></div>
 		<div id="CD8Button"><input type="button" value="CD8+ T cells" /></div>
@@ -22,8 +21,8 @@
 
 <span id="d3space"> </span>
 
-		<!-- <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> online copy of d3-->
-		<script type="text/javascript" src="../d3.v3.js"></script>  <!-- local copy of d3 to use when running offline-->
+		 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script> <!-- online copy of d3-->
+		<!--<script type="text/javascript" src="../d3.v3.js"></script> --> <!-- local copy of d3 to use when running offline-->
 
 		<script type="text/javascript">
 			var dataset;
@@ -289,18 +288,21 @@
 <p>You can toggle between cell types using the buttons, and choose to sort by diversity or not. We found that NK diversity was significantly associated with HIV acquisition. This is clear from the abundance of red bars shifted left when you sort the NK cell bars, but not the CD4+ or CD8+ T cell bars.</p>
 <p>By logistic regression, for each 100-point increase in NK diversity, the woman's odds of HIV acquisition were increased by 2.5-fold! This is as good or better than the best known predictors of HIV acquisition.</p>
 <!-- <p>Want to read more? Check out my paper, or the associated news articles, or the video below.</p> -->
+</details>
 
-
-<p class="basic-title">Human NK cell repertoire stability as a Shiny app</p>
+<details>
+<summary><p id="project-title">Human NK Cell Repertoire Stability: Shiny</p></summary>
 
 <p>If NK cell diversity can be useful in predicting HIV, we need to know whether it is stable in the same person from day to day.</p>
 <p>Here, we took blood from 12 healthy donors every week for 5 of 6 weeks, and again six months later. We measured the population frequency of a number of markers on the cell surface over these six timepoints. If the NK repertoire is stable, the size of the dots representing frequency should stay the same across all timepoints - do you see it?</p>
-<p>We used a Bayesian hierarachical model to formally demonstrate stability in my <a class="plain-link" target="_blank" href = "http://www.ncbi.nlm.nih.gov/pubmed/26203083">paper</a>.</p>
-<p><a id = "shinyLink" target="_blank" href = "https://dstraussalbee.shinyapps.io/repertoire">Explore human NK cell repertoire stability</a></p>
+<p>We used a Bayesian hierarachical model to formally demonstrate stability in my <a id="plain-link" target="_blank" href = "http://www.ncbi.nlm.nih.gov/pubmed/26203083">paper</a>.</p>
+<p><a id = "plain-link" target="_blank" href = "https://dstraussalbee.shinyapps.io/repertoire">Explore human NK cell repertoire stability</a></p>
+</details>
 
-<p class="basic-title">Stop-motion animation</p>
-<p>I learned stop-motion animation as part of a Scientific Illustration and Animation class I took at Stanford. I thought it would be interesting to try to explain my research findings in a non-conventional way that could be understood by a broad audience. Enjoy!</p>
+<details>
+<summary><p id="project-title">The Downside of Diversity: Stop-motion animation</p></summary>
+<p>I learned stop-motion animation as part of a Scientific Illustration and Animation class I took at Stanford. I thought it would be interesting to explain my research findings in an unconventional way that could be understood by a broad audience. Enjoy!</p>
 
-<p><a id = "stopMotionLink" target="_blank" href = "https://youtu.be/4LULvyEKBN4">Check out the video on YouTube</a></p>
-
+<p><a id = "plain-link" target="_blank" href = "https://youtu.be/4LULvyEKBN4">Check out the video on YouTube</a></p>
+</details>
 {% endblock %}
