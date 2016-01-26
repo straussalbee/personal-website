@@ -12,7 +12,11 @@
 
 {% for paper in papers %}
 	<p class="left-text"> {% for key in paper.authors %}
-		{{ key.name + ", "}} 
+		{% if key.name == "Strauss-Albee DM" %}
+			<b>{{ key.name + ", "}} </b>
+		{% else %}
+			{{ key.name + ", "}} 
+		{% endif %}
 	{% endfor %}
 	{{ paper.pubdate + ". " + paper.title + " " + paper.source + ". " + paper.elocationid + "." }} </p>
 
