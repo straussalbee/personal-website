@@ -69,7 +69,7 @@ a:hover, a:active {
 	font-size: 24px;
 	padding: 14px;
 	margin:5 auto;
-	
+
 	
 
 }
@@ -118,4 +118,21 @@ rect:hover {
 
 summary::-webkit-details-marker {
   display: none
+}
+
+summary:after {
+  border-radius: 0px; 
+  content: "+"; 
+  color: #fff; 
+  float: left; 
+  font-size: 20px;
+  font-weight: bold; 
+  margin: -45px 0 20px 0; 
+  padding: 0; 
+  text-align: center; 
+  width: 50px;
+}
+
+details[open] summary:after {
+  content: "-";
 }
